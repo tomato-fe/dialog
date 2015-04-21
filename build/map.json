@@ -1,0 +1,13 @@
+{
+    "res": {
+        "dialog.js": {
+            "uri": "/dialog.js",
+            "type": "js"
+        },
+        "ui-dialog.css": {
+            "uri": "/ui-dialog.css",
+            "type": "css"
+        }
+    },
+    "pkg": {}
+}
