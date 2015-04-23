@@ -4,10 +4,10 @@
   "description": "jq plug dialog",
   "version": "0.1.0",
   "keywords": ["dialog", "jq"],
-  "main": "dialog.js",
+  "main": "index.js",
   "files": [
-    "dialog.css",
-    "dialog.js"
+    "index.css",
+    "index.js"
   ],
   "license": "MIT"
 }
