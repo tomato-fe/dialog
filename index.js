@@ -375,9 +375,12 @@ Dialog.loading = function(msg) {
 	msg = msg == null ? '拼命加载中...' : msg
 	content = '<div class="ui-dialog-loading" title="加载中">' + msg + '</div>'
 
-	if (api) 
-		return api.lock(maskName).content(content).visible()
+	if (api) {
+		Dialog.loading.overtime ++
+		return api.content(content).visible()
+	}
 
+	Dialog.loading.overtime = 1
 	return Dialog({
 		id: 'dialog-loading',
 		skin: 'msc-dialog-loading',
@@ -388,7 +391,8 @@ Dialog.loading = function(msg) {
 
 Dialog.loading.close = function() {
 	var api = Dialog.get("dialog-loading")
-    if(api){
+	Dialog.loading.overtime --
+    if(api && Dialog.loading.overtime < 1){
         api.hide()
     	api = null
     }
