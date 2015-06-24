@@ -47,6 +47,12 @@ var Dialog = function(config) {
     // 合并默认配置
     config = TC.extend({}, _defaults, config)
 
+    config.id = config.id || 'dialog-' + _count++;
+
+    if ( Dialog.list[config.id] ) {
+    	return Dialog.list[config.id]
+    }
+
     if (!TC.isArray(config.button)) {
         config.button = [];
     }
@@ -68,12 +74,6 @@ var Dialog = function(config) {
             text: config.cancelText,
             cb: config.cancel
         });
-    }
-
-    config.id = config.id || 'dialog-' + _count++;
-
-    if ( Dialog.list[config.id] ) {
-    	return Dialog.list[config.id]
     }
      
 	return Dialog.list[config.id] = new Dialog.fn._create(config)
@@ -336,22 +336,20 @@ Dialog.tips = function(options, icon, time) {
 	return Dialog(options)
 }
 
-Dialog.notify = function(msg, time) {
+Dialog.notify = function(options, time) {
 	var $noticeWrap = Dialog.notify.wrap || $('<div>',{
 		'class': 'ui-dialog-notify-fixed'
 	}).appendTo( $(document.body) )
 
 	Dialog.notify.wrap = $noticeWrap
-	if (time != null) {
-		time = time*1e3
-	}
-	return Dialog({
+
+
+	var defOpts = {
 		title: '番茄来了提醒您 ',
 		skin: 'ui-dialog-notice',
-		content: msg,
+		content: '',
 		lock: false,
 		ok: true,
-		time: time,
 		parent: $noticeWrap,
 		openAnimate: function($dialog){
 			var h = $dialog.height()
@@ -364,7 +362,19 @@ Dialog.notify = function(msg, time) {
 				$(this).remove()
 			})
 		}
-	})
+	}
+
+	if (typeof options === 'object') {
+		$.extend(defOpts, options);
+	}
+	if (typeof options === 'string') {
+		defOpts.content = options
+		if (time != null) {
+			time = time*1e3
+		}
+	}
+
+	return Dialog(defOpts)
 }
 
 Dialog.loading = function(msg) {
