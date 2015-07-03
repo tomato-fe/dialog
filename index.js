@@ -297,16 +297,46 @@ Dialog.get = function(id) {
 
 // ================================================ API ==============================
 
-Dialog.alert = function(options) {	
+Dialog.alert = function(options, icon, title, imgSize, time) {
 	if ("string" === typeof options) {
-	    options = {
-	        content: options
-	    }
+		options = {
+			content : options,
+			icon : icon,
+			title : title,
+			imgSize : imgSize,
+			time : time
+		}
 	}
+	var isPredefineIcon = options.icon == "success" || options.icon == "error" || options.icon == "warning", iconClass, className;
+	if (options.icon) {
+		iconClass = 'msc-dialog-alert-' + (isPredefineIcon ? options.icon : "customer") + '-icon';
+		className = 'msc-dialog-alert-icon ' + iconClass;
+		var ocontent = options.content;
+		options.content = '<div class="' + className + '"></div>';
+		options.content += '<div class="msc-dialog-alert-content">' + ocontent + '</div>';
+	}
+	var _alert = Dialog(TC.extend({
+		ok : true
+	}, options));
 
-	return Dialog( TC.extend({
-	    ok: true
-	},options));
+	var $alert;
+	var getAlertDialog = function() {
+		if (!$alert || !$alert.length) {
+			$alert = $("." + iconClass);
+		}
+		return $alert;
+	};
+	if (!isPredefineIcon) {
+		getAlertDialog().css("background-image", "url(" + options.icon + ")");
+	}
+	if (options.imgSize) {
+		getAlertDialog().css({
+			"width" : options.imgSize,
+			"height" : options.imgSize,
+			"background-size" : options.imgSize
+		});
+	}
+	return _alert;
 }
 
 Dialog.confirm = function(txt, okfn, cancelfn) {
@@ -370,7 +400,7 @@ Dialog.notify = function(options, time) {
 	if (typeof options === 'string') {
 		defOpts.content = options
 		if (time != null) {
-			time = time*1e3
+			defOpts.time = time
 		}
 	}
 
